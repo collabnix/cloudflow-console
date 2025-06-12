@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudFlow Console</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        /* Header */
+        .header {
+            background: #232f3e;
+            color: white;
+            padding: 0 20px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff9900;
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 600px;
+            margin: 0 40px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px 40px 10px 15px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .search-bar i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #ff9900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 60px;
+            width: 250px;
+            height: calc(100vh - 60px);
+            background: white;
+            border-right: 1px solid #ddd;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar-section {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .sidebar-title {
+            font-size: 12px;
+            font-weight: bold;
+            color: #666;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            color: #333;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .sidebar-item:hover {
+            color: #ff9900;
+        }
+
+        .sidebar-item i {
+            width: 20px;
+            margin-right: 10px;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            min-height: calc(100vh - 60px);
+        }
+
+        .breadcrumb {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: #232f3e;
+        }
+
+        .page-subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        /* Service Grid */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .service-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .service-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        .service-icon {
+            width: 48px;
+            height: 48px;
+            background: #ff9900;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            color: white;
+            font-size: 20px;
+        }
+
+        .service-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #232f3e;
+        }
+
+        .service-description {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #ff9900;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* Recent Activity */
+        .activity-section {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .activity-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #232f3e;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 32px;
+            height: 32px;
+            background: #e8f4fd;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: #0073bb;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-text {
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+
+        .activity-time {
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .search-bar {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">CloudFlow</div>
+        <div class="search-bar">
+            <input type="text" placeholder="Search services, features, resources...">
+            <i class="fas fa-search"></i>
+        </div>
+        <div class="user-menu">
+            <i class="fas fa-bell"></i>
+            <div class="user-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-section">
+            <div class="sidebar-title">Compute</div>
+            <a href="#" class="sidebar-item">
+                <i class="fas fa-server"></i>
+                Virtual Machines
+            </a>
+            <a href="#" class="sidebar-item">
+                <i class="fas fa-cube"></i>
+                Containers
+            </a>
+            <a href="#" class="sidebar-item">
+                <i class="fas fa-code"></i>
+                Functions
+            </a>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-title">Storage</div>
+            <a href="#" class="sidebar-item">
+                <i class="fas fa-hdd"></i>
+                Object Storage
+            </a>
+            <a href="#" class="sidebar-item">
+                <i class="fas fa-database"></i>
+                Block Storage
+            </a>
+            <a href="#" class="sidebar-item">
+                <i class="fas fa-archive"></i>
+                File Storage
+            </a>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-title">Database</div>
+            <a href="#" class="sidebar-item">
+                <i class="fas fa-table"></i>
+                SQL Database
+            </a>
+            <a href="#" class="sidebar-item">
+                <i class="fas fa-project-diagram"></i>
+                NoSQL Database
+            </a>
+            <a href="#" class="sidebar-item">
+                <i class="fas fa-memory"></i>
+                Cache
+            </a>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-title">AI & Machine Learning</div>
+            <a href="#" class="sidebar-item">
+                <i class="fas fa-brain"></i>
+                AI Platform
+            </a>
+            <a href="#" class="sidebar-item">
+                <i class="fas fa-robot"></i>
+                ML Models
+            </a>
+            <a href="#" class="sidebar-item">
+                <i class="fas fa-chart-line"></i>
+                Analytics
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="breadcrumb">Home > Dashboard</div>
+        <h1 class="page-title">Welcome to CloudFlow Console</h1>
+        <p class="page-subtitle">Manage your cloud infrastructure and services from one central location</p>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">24</div>
+                <div class="stat-label">Active Services</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">156</div>
+                <div class="stat-label">Resources</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">99.9%</div>
+                <div class="stat-label">Uptime</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">$1,247</div>
+                <div class="stat-label">Monthly Cost</div>
+            </div>
+        </div>
+
+        <!-- Services Grid -->
+        <div class="services-grid">
+            <div class="service-card" onclick="alert('Virtual Machines service clicked!')">
+                <div class="service-icon">
+                    <i class="fas fa-server"></i>
+                </div>
+                <div class="service-title">Virtual Machines</div>
+                <div class="service-description">Deploy and manage scalable virtual machines in the cloud with automatic scaling and load balancing.</div>
+            </div>
+
+            <div class="service-card" onclick="alert('Container Registry service clicked!')">
+                <div class="service-icon">
+                    <i class="fas fa-cube"></i>
+                </div>
+                <div class="service-title">Container Registry</div>
+                <div class="service-description">Store, manage, and deploy container images with integrated security scanning and vulnerability detection.</div>
+            </div>
+
+            <div class="service-card" onclick="alert('AI Platform service clicked!')">
+                <div class="service-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <div class="service-title">AI Platform</div>
+                <div class="service-description">Build, train, and deploy machine learning models with our comprehensive AI development platform.</div>
+            </div>
+
+            <div class="service-card" onclick="alert('Database service clicked!')">
+                <div class="service-icon">
+                    <i class="fas fa-database"></i>
+                </div>
+                <div class="service-title">Managed Database</div>
+                <div class="service-description">Fully managed database service with automatic backups, scaling, and high availability.</div>
+            </div>
+
+            <div class="service-card" onclick="alert('Storage service clicked!')">
+                <div class="service-icon">
+                    <i class="fas fa-hdd"></i>
+                </div>
+                <div class="service-title">Object Storage</div>
+                <div class="service-description">Secure, durable, and scalable object storage for any amount of data with global accessibility.</div>
+            </div>
+
+            <div class="service-card" onclick="alert('Functions service clicked!')">
+                <div class="service-icon">
+                    <i class="fas fa-code"></i>
+                </div>
+                <div class="service-title">Serverless Functions</div>
+                <div class="service-description">Run code without managing servers. Pay only for what you use with automatic scaling.</div>
+            </div>
+
+            <div class="service-card" onclick="alert('Analytics service clicked!')">
+                <div class="service-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="service-title">Analytics Engine</div>
+                <div class="service-description">Process and analyze big data with real-time insights and interactive dashboards.</div>
+            </div>
+
+            <div class="service-card" onclick="alert('Security service clicked!')">
+                <div class="service-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="service-title">Security Center</div>
+                <div class="service-description">Comprehensive security monitoring, threat detection, and compliance management tools.</div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="activity-section">
+            <h2 class="activity-title">Recent Activity</h2>
+            <div class="activity-item">
+                <div class="activity-icon">
+                    <i class="fas fa-plus"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-text">New virtual machine instance created in us-east-1</div>
+                    <div class="activity-time">2 minutes ago</div>
+                </div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-icon">
+                    <i class="fas fa-upload"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-text">Container image deployed to production environment</div>
+                    <div class="activity-time">15 minutes ago</div>
+                </div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-icon">
+                    <i class="fas fa-check"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-text">Database backup completed successfully</div>
+                    <div class="activity-time">1 hour ago</div>
+                </div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-icon">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-text">Monthly usage report generated</div>
+                    <div class="activity-time">3 hours ago</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Add some interactivity
+        document.addEventListener('DOMContentLoaded', function() {
+            // Search functionality
+            const searchInput = document.querySelector('.search-bar input');
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    alert('Search functionality would be implemented here: ' + this.value);
+                }
+            });
+
+            // Add hover effects to service cards
+            const serviceCards = document.querySelectorAll('.service-card');
+            serviceCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-4px)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(-2px)';
+                });
+            });
+
+            // Simulate real-time updates
+            setInterval(() => {
+                const statNumbers = document.querySelectorAll('.stat-number');
+                statNumbers.forEach(stat => {
+                    if (stat.textContent.includes('%')) return;
+                    if (stat.textContent.includes('$')) return;
+                    
+                    const current = parseInt(stat.textContent);
+                    const change = Math.random() > 0.5 ? 1 : -1;
+                    const newValue = Math.max(0, current + change);
+                    stat.textContent = newValue;
+                });
+            }, 10000); // Update every 10 seconds
+        });
+    </script>
+</body>
+</html>
